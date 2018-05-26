@@ -15,6 +15,7 @@ The plan for this tutorial is
 - [CouchDB download, build and installation](#3-download-build-and-install-software).
 - [First run and check](#4-first-run-and-check).
 - [Script for running CouchDB on boot](#5-script-for-running-couchdb-on-boot).
+- [Personal experiences with CouchDB](#6-personal-experiences-with-couchdb).
 
 ---
 
@@ -258,6 +259,20 @@ which should reply something like :
 **Now, you are ready to enjoy all CouchDB server capabilities !**
 
 Have a look to [CouchDB Documentation](http://docs.couchdb.org/en/latest/) and enjoy [PouchDB](http://pouchdb.com/) in your browser, mobile or [NodeJS](http://nodejs.org/) projects.
+
+---
+
+# 6. Personal Experiences with CouchDB #
+
+We use CouchDB since 2009. It stability, ease of use, reliability, data safety, performance and many features (like replication) fit our needs. We use CouchDB mainly with PouchDB javascript library in the browser and in NodeJS. We have instances of CouchDB running on Raspbian efficiently and without issues.
+
+An example of awesome feature it the [`_changes API`](http://docs.couchdb.org/en/2.1.1/api/database/changes.html) which allows us to listen to databases changes and update graphs or other IoT events in realtime both in the browser and in NodeJS servers. To implement it quickly, have a look to the example usage at [pouchdb.com/api.html#changes](https://pouchdb.com/api.html#changes).
+
+## Hire us ! ##
+
+If you have some projects using CouchDB and would like us to help, please get in touch with us&nbsp;!
+
+---
 
 Your Feedback and suggestions for improvements would be welcome !  
 Joël
