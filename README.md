@@ -10,15 +10,15 @@ This tutorial is a step by step explanation on how to install the [NOSQL databas
 
 The plan for this tutorial is
 
-- [Short introduction on what is CouchDB?](#01)
-- Prerequisites for the Raspberry Pi.
+- [Short introduction on what is CouchDB?](#1-short-introduction-on-what-is-couchdb)
+- [Prerequisites for the Raspberry Pi](#2-prerequisite-for-the-raspberry-pi).
 - CouchDB download, build and installation.
 - First run and check.
 - Script for running CouchDB on boot.
 
 ---
 
-# <span id="01">1. Short introduction on what is CouchDB?</span> #
+#1. Short introduction on what is CouchDB?#
 
 CouchDB is an awesome and very reliable NOSQL database server which stores JSON documents. CouchDB can be run from a Raspberry Pi to big servers. A version built for mobile and desktop web-browsers is named [PouchDB](http://pouchdb.com/) and [Couchbase Lite](https://developer.couchbase.com/documentation/mobile/current/guides/couchbase-lite/index.html) is built for native iOS & Android apps. It is very easy to store and query documents with CouchDB databases and data can be replicated seamlessly with each other.
 
@@ -74,29 +74,59 @@ Now, we add the Erlang Solutions repository and public key with:
 	wget http://packages.erlang-solutions.com/debian/erlang_solutions.asc
 	sudo apt-key add erlang_solutions.asc
 	sudo apt-get update
-	
+
+and install all build dependencies with this three-lines command (copy and paste all 3 lines together in the terminal):
+
 	sudo apt-get --no-install-recommends -y install build-essential \
 	pkg-config erlang libicu-dev \
 	libmozjs185-dev libcurl4-openssl-dev
-	
+
+Now, create a new user named couchdb and its home directory:
+
 	sudo useradd -d /home/couchdb couchdb
 	sudo mkdir /home/couchdb
 	sudo chown couchdb:couchdb /home/couchdb
-	
+
+Ensure you are on you home directory with:
+
 	cd
-	
+
+To download Apache CouchDB source code, first open the following link:
+
+[http://couchdb.apache.org/#download](http://couchdb.apache.org/#download)
+
+and click on the Source link as seen in the following picture:
+
+![01 Download Couchdb](img/01-download-couchdb.jpeg)
+
+The following page will be displayed:
+
+![02 Asf](img/02-asf.jpeg)
+
+Now, copy the suggested mirror site for your download (e.g. control-click on the link and choosing copy in popup menu), and paste the link after the `wget` in your terminal. You should execute something like:
+
 	wget http://mirror.ibcp.fr/pub/apache/couchdb/source/2.1.1/apache-couchdb-2.1.1.tar.gz   
-	
+
+which download the source archive file. Extract the archive and enter the resulting source directory (maybe you have to adapt the name of the archive `.gz` file and its corresponding directory):
+
 	tar zxvf apache-couchdb-2.1.1.tar.gz
 	cd apache-couchdb-2.1.1/
-	
+
+You can now build and make the CouchDB executable:
+
 	./configure
 	make release
-	
+
+Finally, copy the built release to the appropriate couchdb user directory:
+
 	cd ./rel/couchdb/
 	sudo cp -Rp * /home/couchdb
 	sudo chown -R couchdb:couchdb /home/couchdb
-	
+
+Now, CouchDB is installed and ready for a first run.
+
+If you want you can now remove unnecessary files (adapt to the name of your previous download) with:
+
 	cd
 	rm -R apache-couchdb-2.1.1/
 	rm apache-couchdb-2.1.1.tar.gz
@@ -106,34 +136,64 @@ Now, we add the Erlang Solutions repository and public key with:
 
 # 4. First run and check. #
 
-For remote access:
+If you install CouchDB with SSH you are probably willing to connect to the CouchDB server from **external IP addresses** (i.e. remotely from the Pi). In this case, you have to edit the `/home/couchdb/etc/local.ini` file:
 
 	sudo nano /home/couchdb/etc/local.ini
 
-=> change line
+and change the line from:
 
 	#bind_address = 127.0.0.1
 
-to:
+to (dont miss to delete the 1st '#' character):
 
 	bind_address = 0.0.0.0
 
-(! not prefixed by # !)
+IMPORTANT ! If you want to securely keep the access to CouchDB only from the Raspberry locally (localhost and not remote) then you should not change the bind_address to 0.0.0.0. You can still change the configuration later at any time.
 
-Now, you are ready to run CouchDB as couchdb user with:
+Now, you are ready to run CouchDB as `couchdb` user with this command:
 	
 	sudo -i -u couchdb /home/couchdb/bin/couchdb
+
+it display its log in console. Dont worry if you see some warning or even error messages in this first run of CouchDB.
+
+Open, your Browser in Raspberry and go to the following link&nbsp;: [http://192.168.1.177:5984/_utils/](http://192.168.1.177:5984/_utils/). Use whatever IP your raspberry has with port **5984**, or [http://localhost:5984/_utils/](http://localhost:5984/_utils/).
+
+Then, click on the verify button on left:
+
+![03 Verify Couchdb Installation](img/03-verify-couchdb-installation.jpeg)
+
+then on the green `Verify Installation` button to check your installation. If everything is correct, you will get:
+
+![04 Verify Couchdb Success](img/04-verify-couchdb-success.jpeg)
+
+Look at the [CouchDB Documentation](http://docs.couchdb.org/en/latest/) for more information and especially to configure your CouchDB server (administrator, single or multi-cluster, enabling CORS, etc.).
+
+
 
 ---
 
 # 5. Script for running CouchDB on boot. #
 
+If like me CouchDB is the main database server for your projects, then you want CouchDB to start automatically on booting your Raspberry Pi. To achieve this we use `systemd` and create a configuration as described below.
+
+First, create a directory owned by `couchdb` user for your CouchDB logs:
+
 	mkdir /var/log/couchdb/
 	sudo chown couchdb:couchdb /var/log/couchdb
-	
-Then, be sure that CouchDB is still running and in your Browser go into the Configuration page: [http://127.0.0.1:5984/_utils/#/_config](http://127.0.0.1:5984/_utils/#/_config). If you have defined an administrator you should be logged in as the administrator.
 
-Click on the +Add Option and fill the form like here:
+Then, make sure that CouchDB is still running, then in your Browser go to CouchdDB `Configuration` page [http://127.0.0.1:5984/_utils/#/_config](http://127.0.0.1:5984/_utils/#/_config). If you previously defined an administrator you will be asked to log in as the administrator.
+
+![05 Config](img/05-config.jpeg)
+
+Click on the `+Add Option` and fill the form like here:
+
+![06 Add Option Empty](img/06-add-option-empty.jpeg)
+
+>>Empty form.
+
+![07 Add Option Value](img/07-add-option-value.jpeg)
+
+>>Values to set.
 
 values are:
 
@@ -141,7 +201,13 @@ values are:
 - `file` for Name and 
 - `/var/log/couchdb/couch.log` for Value.
 
-Click on Create.
+Click on `Create`.
+
+Now, scroll to Configuration Section **log** and change the value of the property named **writer** from `sterr` to `file` (double-click on word `stderr`) as in:
+
+![08 Log](img/08-log.jpeg)
+
+This tell CouchDB to write its log from now to file `/var/log/couchdb/couch.log`.
 
 Now, create the service by editing a new file:
 
@@ -166,7 +232,7 @@ Then, fix file permissions with:
 
 	sudo chmod 644 /lib/systemd/system/couchdb.service
 
-and instruct systemd to start the service during the boot sequence:
+and instruct `systemd` to start the service during the boot sequence:
 
 	sudo systemctl daemon-reload
 	sudo systemctl enable couchdb.service
@@ -179,7 +245,7 @@ and check service status using:
 
 	sudo systemctl status couchdb.service
 
-Also, either browse to page http://localhost:5984 to check that CouchDB server is up and running, or execute in your terminal:
+Also, either browse to page [http://localhost:5984](http://localhost:5984/) to check that CouchDB server is up and running, or execute in your terminal:
 
 	curl http://localhost:5984
 
@@ -187,9 +253,11 @@ which should reply something like :
 
 	{"couchdb":"Welcome","version":"2.1.1","features":["scheduler"],"vendor":{"name":"The Apache Software Foundation"}}
 
-Now, you are ready to enjoy all CouchDB server capabilities !
+---
 
-Have a look to CouchDB Documentation and enjoy PouchDB in your browser, mobile or NodeJS projects.
+**Now, you are ready to enjoy all CouchDB server capabilities !**
+
+Have a look to [CouchDB Documentation](http://docs.couchdb.org/en/latest/) and enjoy [PouchDB](http://pouchdb.com/) in your browser, mobile or [NodeJS](http://nodejs.org/) projects.
 
 Your Feedback and suggestions for improvements would be welcome !  
-joel
+Joël
