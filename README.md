@@ -12,13 +12,13 @@ The plan for this tutorial is
 
 - [Short introduction on what is CouchDB?](#1-short-introduction-on-what-is-couchdb)
 - [Prerequisites for the Raspberry Pi](#2-prerequisite-for-the-raspberry-pi).
-- CouchDB download, build and installation.
-- First run and check.
-- Script for running CouchDB on boot.
+- [CouchDB download, build and installation](#3-download-build-and-install-software).
+- [First run and check](#4-first-run-and-check).
+- [Script for running CouchDB on boot](#5-script-for-running-couchdb-on-boot).
 
 ---
 
-#1. Short introduction on what is CouchDB?#
+# 1. Short introduction on what is CouchDB? #
 
 CouchDB is an awesome and very reliable NOSQL database server which stores JSON documents. CouchDB can be run from a Raspberry Pi to big servers. A version built for mobile and desktop web-browsers is named [PouchDB](http://pouchdb.com/) and [Couchbase Lite](https://developer.couchbase.com/documentation/mobile/current/guides/couchbase-lite/index.html) is built for native iOS & Android apps. It is very easy to store and query documents with CouchDB databases and data can be replicated seamlessly with each other.
 
