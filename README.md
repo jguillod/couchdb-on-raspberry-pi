@@ -280,27 +280,37 @@ My roadmap is to encapsulate CouchDB in a Docker container.
 
 We use CouchDB since 2009. Its stability, ease of use, reliability, data safety, performance and many features (like replication) fit our needs. We use [CouchDB](http://couchdb.apache.org) mainly with [PouchDB javascript library](http://pouchdb.com/) in the browser and in NodeJS. We have instances of CouchDB running on Raspbian efficiently and without issues.
 
-An example of awesome feature is the [`_changes API`](http://docs.couchdb.org/en/2.1.1/api/database/changes.html) which allows us to listen to databases changes and update svg charts or other IoT data events in realtime both in the browser and in NodeJS servers. To implement it quickly, have a look to the example usage at [pouchdb.com/api.html#changes](https://pouchdb.com/api.html#changes). Actually, it is very simple to write&nbsp;:
+An example of awesome feature is the [`_changes API`](http://docs.couchdb.org/en/2.1.1/api/database/changes.html) which allows us to listen to databases changes and update svg charts or other IoT data events in realtime both in the browser and in NodeJS servers. To implement it quickly, have a look to the example usage at [pouchdb.com/api.html#changes](https://pouchdb.com/api.html#changes). Actually, it is very simple to follow changes. In NodeJS just write something like (see [Setting up PouchDB](https://pouchdb.com/guides/setup-pouchdb.html) for more info)&nbsp;:
 
-```var db = new PouchDB('http://localhost:5984/dbname');
+```
+var PouchDB = require('pouchdb'); // in a web page just add a <script src="pouchdb-7.1.1.min.js"></script>
+var db = new PouchDB('http://localhost:5984/dbname');
 var changes = db.changes({
-  since: 'now',
-  live: true,
-  include_docs: true
+    since: 'now',
+    live: true,
+    include_docs: true
 }).on('change', function(change) {
-  // handle change
+    // handle change
+    var doc = change.doc;
+    console.log(`💥 got a changes ${doc._deleted ? '(deleted)' : ''} =>`, doc._id, doc._rev, change);
 }).on('complete', function(info) {
-  // changes() was canceled
+    // changes() was canceled
+    console.log('‼️  listening to changes stopped', info);
 }).on('error', function (err) {
-  console.log(err);
+    console.log(err);
 });
 
-changes.cancel(); // whenever you want to cancel```
+...
+
+changes.cancel(); // whenever you want to cancel
+```
 
 
 ## Hire us ! ##
 
 If you have some projects using CouchDB and would like us to help, please get in touch with us&nbsp;!
+
+Some of our NodeJS modules are [here](https://www.npmjs.com/~jguillod).
 
 ---
 
