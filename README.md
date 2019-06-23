@@ -17,7 +17,8 @@ The plan for this tutorial is
 3. [CouchDB download, build and installation](#3-download-build-and-install-software).
 4. [First run and check](#4-first-run-and-check).
 5. [Script for running CouchDB on boot](#5-script-for-running-couchdb-on-boot).
-6.  [Personal experiences with CouchDB](#6-personal-experiences-with-couchdb).
+6. [To Do](#6-to-do)
+7. [Personal experiences with CouchDB](#7-personal-experiences-with-couchdb).
 
 ---
 
@@ -269,11 +270,33 @@ Have a look to [CouchDB Documentation](http://docs.couchdb.org/en/latest/) and e
 
 ---
 
-# 6. Personal Experiences with CouchDB #
+# 6. To Do #
+
+My roadmap is to encapsulate CouchDB in a Docker container.
+
+---
+
+# 7. Personal Experiences with CouchDB #
 
 We use CouchDB since 2009. Its stability, ease of use, reliability, data safety, performance and many features (like replication) fit our needs. We use [CouchDB](http://couchdb.apache.org) mainly with [PouchDB javascript library](http://pouchdb.com/) in the browser and in NodeJS. We have instances of CouchDB running on Raspbian efficiently and without issues.
 
-An example of awesome feature is the [`_changes API`](http://docs.couchdb.org/en/2.1.1/api/database/changes.html) which allows us to listen to databases changes and update svg charts or other IoT data events in realtime both in the browser and in NodeJS servers. To implement it quickly, have a look to the example usage at [pouchdb.com/api.html#changes](https://pouchdb.com/api.html#changes).
+An example of awesome feature is the [`_changes API`](http://docs.couchdb.org/en/2.1.1/api/database/changes.html) which allows us to listen to databases changes and update svg charts or other IoT data events in realtime both in the browser and in NodeJS servers. To implement it quickly, have a look to the example usage at [pouchdb.com/api.html#changes](https://pouchdb.com/api.html#changes). Actually, it is very simple to write&nbsp;:
+
+```var db = new PouchDB('http://localhost:5984/dbname');
+var changes = db.changes({
+  since: 'now',
+  live: true,
+  include_docs: true
+}).on('change', function(change) {
+  // handle change
+}).on('complete', function(info) {
+  // changes() was canceled
+}).on('error', function (err) {
+  console.log(err);
+});
+
+changes.cancel(); // whenever you want to cancel```
+
 
 ## Hire us ! ##
 
