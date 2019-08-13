@@ -308,6 +308,11 @@ changes.cancel(); // whenever you want to cancel
 
 ## Hire us ! ##
 
+If this was of help to you, please consider to buy me some cups of coffee on&nbsp;:
+
+[![click me](https://ko-fi.com/img/Kofi_Logo_Blue.svg)](https://ko-fi.com/elojes)
+
+
 If you have some projects using CouchDB and would like us to help, please get in touch with us&nbsp;!
 
 Some of our NodeJS modules are [here](https://www.npmjs.com/~jguillod).
